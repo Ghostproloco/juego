@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclipse Forge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app" class="app">
+        <header class="hud">
+            <div class="hud-group">
+                <span class="hud-label" data-i18n="energy">Energía</span>
+                <span id="hud-energy" class="hud-value">0</span>
+            </div>
+            <div class="hud-group">
+                <span class="hud-label" data-i18n="epc">EPC</span>
+                <span id="hud-epc" class="hud-value">0</span>
+            </div>
+            <div class="hud-group">
+                <span class="hud-label" data-i18n="eps">EPS</span>
+                <span id="hud-eps" class="hud-value">0</span>
+            </div>
+            <div class="hud-group">
+                <span class="hud-label" data-i18n="multipliers">Multiplicadores</span>
+                <span id="hud-multipliers" class="hud-value">x1</span>
+            </div>
+            <div class="hud-progress">
+                <span class="hud-label" data-i18n="next-goal">Próxima meta</span>
+                <div class="progress-bar">
+                    <div id="hud-progress-bar" class="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+        <main class="main-layout">
+            <section class="click-zone">
+                <canvas id="fx-canvas" class="fx-canvas" width="480" height="270"></canvas>
+                <button id="core-button" class="core-button" aria-live="polite" data-i18n="tap">Forjar Energía</button>
+                <div id="floating-text-container" aria-hidden="true"></div>
+                <div class="combo-meter">
+                    <span data-i18n="combo">Combo</span>
+                    <div class="progress-bar small">
+                        <div id="combo-fill" class="progress-fill"></div>
+                    </div>
+                    <span id="combo-count" class="hud-value">x1</span>
+                </div>
+                <div class="fever-indicator" id="fever-indicator">Fiebre x1</div>
+            </section>
+            <aside class="sidebar">
+                <nav class="tabs">
+                    <button class="tab-button active" data-tab="generators" data-i18n="tab-generators">Generadores</button>
+                    <button class="tab-button" data-tab="upgrades" data-i18n="tab-upgrades">Mejoras</button>
+                    <button class="tab-button" data-tab="artifacts" data-i18n="tab-artifacts">Artefactos</button>
+                    <button class="tab-button" data-tab="talents" data-i18n="tab-talents">Talentos</button>
+                    <button class="tab-button" data-tab="expeditions" data-i18n="tab-expeditions">Expediciones</button>
+                    <button class="tab-button" data-tab="missions" data-i18n="tab-missions">Misiones</button>
+                    <button class="tab-button" data-tab="achievements" data-i18n="tab-achievements">Logros</button>
+                    <button class="tab-button" data-tab="market" data-i18n="tab-market">Mercado</button>
+                    <button class="tab-button" data-tab="options" data-i18n="tab-options">Opciones</button>
+                </nav>
+                <div class="tab-content active" id="tab-generators">
+                    <ul id="generators-list" class="item-list"></ul>
+                </div>
+                <div class="tab-content" id="tab-upgrades">
+                    <ul id="upgrades-list" class="item-list"></ul>
+                </div>
+                <div class="tab-content" id="tab-artifacts">
+                    <ul id="artifacts-list" class="item-list"></ul>
+                </div>
+                <div class="tab-content" id="tab-talents">
+                    <div id="talents-tree" class="talents-tree"></div>
+                </div>
+                <div class="tab-content" id="tab-expeditions">
+                    <div id="expedition-panel" class="expedition-panel"></div>
+                </div>
+                <div class="tab-content" id="tab-missions">
+                    <div id="missions-daily" class="mission-group"></div>
+                    <div id="missions-weekly" class="mission-group"></div>
+                </div>
+                <div class="tab-content" id="tab-achievements">
+                    <ul id="achievements-list" class="item-list"></ul>
+                </div>
+                <div class="tab-content" id="tab-market">
+                    <div id="market-panel" class="market-panel"></div>
+                </div>
+                <div class="tab-content" id="tab-options">
+                    <div class="options-grid">
+                        <label><input type="checkbox" id="toggle-high-contrast"> <span data-i18n="opt-high-contrast">Alto contraste</span></label>
+                        <label><input type="checkbox" id="toggle-reduce-fx"> <span data-i18n="opt-reduce-fx">Reducir efectos</span></label>
+                        <label><input type="range" id="slider-fx-volume" min="0" max="1" step="0.05"> <span data-i18n="opt-fx-volume">Volumen FX</span></label>
+                        <label><input type="range" id="slider-music-volume" min="0" max="1" step="0.05"> <span data-i18n="opt-music-volume">Volumen Música</span></label>
+                        <button id="btn-save" class="secondary" data-i18n="opt-save">Guardar</button>
+                        <button id="btn-load" class="secondary" data-i18n="opt-load">Restaurar</button>
+                        <button id="btn-export" class="secondary" data-i18n="opt-export">Exportar</button>
+                        <button id="btn-import" class="secondary" data-i18n="opt-import">Importar</button>
+                        <button id="btn-wipe" class="danger" data-i18n="opt-wipe">Borrar</button>
+                    </div>
+                </div>
+            </aside>
+        </main>
+        <footer class="ticker" id="live-ticker" aria-live="polite"></footer>
+    </div>
+
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+    <div id="debug-overlay" class="debug-overlay" hidden>
+        <h3>Debug</h3>
+        <div id="debug-info"></div>
+        <div class="debug-actions">
+            <button data-debug="energy">+1M Energía</button>
+            <button data-debug="skip-expedition">Completar Expedición</button>
+            <button data-debug="event">Forzar Evento</button>
+        </div>
+    </div>
+
+    <script src="main.js" type="module"></script>
+</body>
+</html>
